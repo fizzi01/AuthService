@@ -11,9 +11,9 @@ services:
     expose:
       - "8000"
     depends_on:
-      - registration-db
+      - auth-db
     networks:
-      - registration-net
+      - auth-net
     volumes:
       - ./build/libs/AuthService-v0.0.0.jar:/app/app.jar
     working_dir: /app
