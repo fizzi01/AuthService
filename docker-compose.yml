@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+
+  auth-service:
+    image: openjdk:22-jdk-oracle
+    container_name: authimage
+    ports:
+      - 8080:8080
+      - 8000:8000
+    expose:
+      - "8000"
+    depends_on:
+      - registration-db
+    networks:
+      - registration-net
+    volumes:
+      - ./build/libs/AuthService-v0.0.0.jar:/app/app.jar
+    working_dir: /app
+    entrypoint: java -Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000 -jar /app/app.jar
+
+  auth-db:
+    image: mongo:latest
+    container_name: authdb
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo_auth:/etc/mongo
+      - mongo_auth_data:/data/db
+      - mongo_auth_config:/data/configdb
+    networks:
+      - auth-net
+
+networks:
+  auth-net:
+    driver:
+      "bridge"
+
+volumes:
+    mongo_auth:
+    mongo_auth_data:
+    mongo_auth_config:
