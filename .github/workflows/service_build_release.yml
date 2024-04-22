@@ -12,6 +12,7 @@ on:
       
 jobs:
   build:
+    name: Build Service Jar
     runs-on: ubuntu-latest
 
     steps:
@@ -39,6 +40,7 @@ jobs:
         
 
   prepare_release:
+    name: Prepare release
     needs: build
     runs-on: ubuntu-latest
     permissions: write-all
@@ -63,7 +65,18 @@ jobs:
           major=$(echo "$latest_tag" | cut -d '.' -f1)
           minor=$(echo "$latest_tag" | cut -d '.' -f2)
           patch=$(echo "$latest_tag" | cut -d '.' -f3)
-          new_version="$major.$minor.$((patch + 1))"
+          if (( patch == 10 )); then
+              patch=0
+              if (( minor == 10 )); then
+                minor=0
+                major=$((major + 1))
+              else
+                minor=$((minor + 1))
+              fi
+          else
+              patch=$((patch + 1))
+          fi
+          new_version="$major.$minor.$patch"
           echo "NEW_TAG=$new_version" >> $GITHUB_ENV
           echo "NEW_TAG=$new_version" >> $GITHUB_OUTPUT
       
@@ -81,20 +94,29 @@ jobs:
 
       - name: Update docker-compose.yml
         run: |
-          repository_name="${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}"
-          new_jar_name="$repository_name-${{ env.NEW_TAG }}.jar"  # Costruisce il nuovo nome del JAR
-          sed -i'' -e "s|./build/libs/$repository_name-v[0-9]*\.[0-9]*\.[0-9]*\.jar|./build/libs/$new_jar_name|g" docker-compose.yml
+          if [ -f docker-compose.yml ]; then
+            repository_name="${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}"
+            new_jar_name="$repository_name-${{ env.NEW_TAG }}.jar"  # Costruisce il nuovo nome del JAR
+            sed -i'' -e "s|./build/libs/$repository_name-v[0-9]*\.[0-9]*\.[0-9]*\.jar|./build/libs/$new_jar_name|g" docker-compose.yml
+          else
+            echo "docker-compose.yml not found, skipping update."
+          fi
+          
+          
 
       - name: Commit and push changes
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add build.gradle
-          git add docker-compose.yml
+          if [ -f docker-compose.yml ]; then
+            git add docker-compose.yml
+          fi
           git commit -m "Update build.gradle & docker-compose to ${{ env.NEW_TAG }}"
           git push
 
   release:
+    name: Release Service
     needs: prepare_release
     permissions: write-all
     runs-on: ubuntu-latest
