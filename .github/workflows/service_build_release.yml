@@ -55,8 +55,11 @@ jobs:
       - name: Get latest tag
         id: tag_version
         run: |
-          latest_tag=$(git describe --tags --abbrev=0 --match "v*" || echo "v0.0.0")
-          echo "TAG=$latest_tag" >> $GITHUB_ENV
+          version=$(grep "version =" build.gradle | cut -d "'" -f2)
+          if [[ -z "$version" ]]; then
+            version=$(git describe --tags --abbrev=0 --match "v*" || echo "v0.0.0")
+          fi
+          echo "TAG=$version" >> $GITHUB_ENV
 
       - name: Increment version
         id: new_version

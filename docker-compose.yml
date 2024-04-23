@@ -6,16 +6,16 @@ services:
     image: openjdk:22-jdk-oracle
     container_name: authimage
     ports:
-      - 8080:8080
-      - 8000:8000
+      - 8082:8080
+      - 8002:8000
     expose:
-      - "8000"
+      - "8002"
     depends_on:
       - auth-db
     networks:
       - auth-net
     volumes:
-      - ./build/libs/AuthService-v0.0.2:/app/app.jar
+      - ./build/libs/AuthService-v0.0.3.jar:/app/app.jar
     working_dir: /app
     entrypoint: java -Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8000 -jar /app/app.jar
 
@@ -23,7 +23,7 @@ services:
     image: mongo:latest
     container_name: authdb
     ports:
-      - 27017:27017
+      - 27018:27017
     volumes:
       - mongo_auth:/etc/mongo
       - mongo_auth_data:/data/db
@@ -33,6 +33,7 @@ services:
 
 networks:
   auth-net:
+    name: auth_net
     driver:
       "bridge"
 
