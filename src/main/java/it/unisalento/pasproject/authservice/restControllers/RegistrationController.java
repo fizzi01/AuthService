@@ -20,8 +20,6 @@ import static it.unisalento.pasproject.authservice.configuration.SecurityConfig.
 public class RegistrationController {
     @Autowired
     UserRepository userRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private DataConsistencyService dataConsistencyService;
@@ -34,10 +32,12 @@ public class RegistrationController {
         user.setEmail(registrationDTO.getEmail());
         user.setPassword(passwordEncoder().encode(registrationDTO.getPassword()));
         user.setRole(registrationDTO.getRole());
+        user.setRegistrationDate(new java.util.Date());
 
         //Così restituisce l'id assegnato da MongoDB
         user = userRepository.save(user);
 
+        registrationDTO.setRegistrationDate(user.getRegistrationDate());
         dataConsistencyService.alertDataConsistency(registrationDTO);
 
         UserDTO retUser = new UserDTO();
