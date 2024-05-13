@@ -6,8 +6,8 @@ services:
     image: openjdk:22-jdk-oracle
     container_name: authimage
     ports:
-      - 8082:8080
-      - 8002:8000
+      - "8082:8080"
+      - "8002:8000"
     expose:
       - "8002"
     depends_on:
@@ -23,7 +23,7 @@ services:
     image: mongo:latest
     container_name: authdb
     ports:
-      - 27018:27017
+      - "27018:27017"
     volumes:
       - mongo_auth:/etc/mongo
       - mongo_auth_data:/data/db
