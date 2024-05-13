@@ -3,7 +3,7 @@ package it.unisalento.pasproject.authservice.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -16,7 +16,7 @@ public class RegistrationDTO {
 
     private String role;
 
-    private Date registrationDate;
+    private LocalDateTime registrationDate;
 
     private String password;
 }
