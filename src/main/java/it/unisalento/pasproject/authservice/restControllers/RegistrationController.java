@@ -3,6 +3,7 @@ package it.unisalento.pasproject.authservice.restControllers;
 import it.unisalento.pasproject.authservice.domain.User;
 import it.unisalento.pasproject.authservice.dto.RegistrationDTO;
 import it.unisalento.pasproject.authservice.dto.UserDTO;
+import it.unisalento.pasproject.authservice.exceptions.UserAlreadyExist;
 import it.unisalento.pasproject.authservice.repositories.UserRepository;
 import it.unisalento.pasproject.authservice.service.DataConsistencyService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +23,21 @@ import static it.unisalento.pasproject.authservice.configuration.SecurityConfig.
 @RestController
 @RequestMapping("/api/registration")
 public class RegistrationController {
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final DataConsistencyService dataConsistencyService;
 
     @Autowired
-    private DataConsistencyService dataConsistencyService;
+    public RegistrationController(UserRepository userRepository, DataConsistencyService dataConsistencyService) {
+        this.userRepository = userRepository;
+        this.dataConsistencyService = dataConsistencyService;
+    }
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO post(@RequestBody RegistrationDTO registrationDTO) {
         User existingUser = userRepository.findByEmail(registrationDTO.getEmail());
         if (existingUser != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User already exists");
+            throw new UserAlreadyExist("User already exists: " + registrationDTO.getEmail());
         }
 
         User user = new User();
@@ -56,8 +61,7 @@ public class RegistrationController {
         retUser.setEmail(user.getEmail());
         retUser.setRole(user.getRole());
         retUser.setRegistrationDate(user.getRegistrationDate());
-
-
+        
         return retUser;
     }
 }

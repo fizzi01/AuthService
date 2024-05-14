@@ -39,7 +39,7 @@ public class AuthController {
         );
         User user = userRepository.findByEmail(loginDTO.getEmail());
         if(user == null) {
-            throw new UsernameNotFoundException(loginDTO.getEmail());
+            throw new UsernameNotFoundException("Not found user with email: " + loginDTO.getEmail() + ".");
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final String jwt = jwtUtilities.generateToken(user.getEmail());

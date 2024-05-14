@@ -36,7 +36,7 @@ public class DataConsistencyService {
     }
 
     @RabbitListener(queues = "${rabbitmq.queue.update.name}")
-    public void receiveMessage(UpdatedProfileMessageDTO updatedProfileMessageDTO) {
+    public void receiveUpdateMessage(UpdatedProfileMessageDTO updatedProfileMessageDTO) {
         LOGGER.info("Received message {}", updatedProfileMessageDTO.toString());
 
         //TODO: Implementare logica per gestire il dto e aggiornare l'auth
