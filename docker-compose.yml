@@ -4,8 +4,8 @@ services:
     image: openjdk:22-jdk-oracle
     container_name: authimage
     ports:
-      - "${SERVICE_PORT1}:8082"
-      - "${SERVICE_PORT2}:8002"
+      - "${SERVICE_PORT1}:8080"
+      - "${SERVICE_PORT2}:8000"
     expose:
       - "8002"
     depends_on:
