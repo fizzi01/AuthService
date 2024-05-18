@@ -184,6 +184,11 @@ jobs:
         with:
           name: service-jar
 
+      - name: Artifact rename
+        run: |
+          echo "Renaming artifact jar"
+          mv *.jar ${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}-${{  needs.prepare_release.outputs.new-tag }}.jar
+
       - name: Deploy
         run: |
           if  [ "$DEPLOY" != 1  ]; then
