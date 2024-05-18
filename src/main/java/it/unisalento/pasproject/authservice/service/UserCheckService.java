@@ -19,12 +19,7 @@ import static it.unisalento.pasproject.authservice.security.SecurityConstants.RO
 @Service
 public class UserCheckService {
 
-    @Autowired
-    private MessageExchanger messageExchanger;
-
-    @Autowired
-    @Qualifier("RabbitMQExchange")
-    private MessageExchangeStrategy messageExchangeStrategy;
+    private final MessageExchanger messageExchanger;
 
     @Value("${rabbitmq.exchange.security.name}")
     private String securityExchange;
@@ -34,6 +29,11 @@ public class UserCheckService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserCheckService.class);
 
+    @Autowired
+    public UserCheckService(MessageExchanger messageExchanger, @Qualifier("RabbitMQExchange") MessageExchangeStrategy messageExchangeStrategy) {
+        this.messageExchanger = messageExchanger;
+        this.messageExchanger.setStrategy(messageExchangeStrategy);
+    }
 
     /**
      * Load the user details by email
@@ -42,8 +42,6 @@ public class UserCheckService {
      * @throws UsernameNotFoundException if the user is not found
      */
     public UserDetailsDTO loadUserByUsername(String email) throws UsernameNotFoundException {
-
-        messageExchanger.setStrategy(messageExchangeStrategy);
 
         //Chiamata MQTT a CQRS per ottenere i dettagli dell'utente
         UserDetailsDTO user = messageExchanger.exchangeMessage(email,securityRequestRoutingKey,securityExchange,UserDetailsDTO.class);
