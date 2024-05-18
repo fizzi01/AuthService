@@ -1,4 +1,4 @@
-package it.unisalento.pasproject.authservice.business.io.producer;
+package it.unisalento.pasproject.authservice.business.producer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

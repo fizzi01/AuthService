@@ -1,4 +1,4 @@
-package it.unisalento.pasproject.authservice.business.io.producer;
+package it.unisalento.pasproject.authservice.business.producer;
 
 public interface MessageProducerStrategy {
     <T> void sendMessage(T messageDTO,String routingKey, String exchange);

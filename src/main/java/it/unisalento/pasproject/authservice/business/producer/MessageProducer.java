@@ -1,4 +1,4 @@
-package it.unisalento.pasproject.authservice.business.io.producer;
+package it.unisalento.pasproject.authservice.business.producer;
 
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;

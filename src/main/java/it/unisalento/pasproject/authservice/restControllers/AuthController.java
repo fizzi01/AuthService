@@ -19,14 +19,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class AuthController {
 
-    @Autowired
-    UserRepository userRepository;
+    final UserRepository userRepository;
+
+    private final AuthenticationManager authenticationManager;
+
+    private final JwtUtilities jwtUtilities;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private JwtUtilities jwtUtilities;
+    public AuthController(UserRepository userRepository, AuthenticationManager authenticationManager, JwtUtilities jwtUtilities) {
+        this.userRepository = userRepository;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtilities = jwtUtilities;
+    }
 
 
     @RequestMapping(value="/authenticate", method = RequestMethod.POST)

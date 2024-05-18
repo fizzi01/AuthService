@@ -1,5 +1,6 @@
 package it.unisalento.pasproject.authservice.configuration;
 
+import it.unisalento.pasproject.authservice.security.ExceptionFilter;
 import it.unisalento.pasproject.authservice.security.JwtAuthenticationFilter;
 import it.unisalento.pasproject.authservice.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig {
 
-    @Autowired
-    CustomUserDetailsService userDetailsService;
-
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -44,6 +42,9 @@ public class SecurityConfig {
         // Configurazione CSRF
         http.csrf(AbstractHttpConfigurer::disable); // Disabilita CSRF
 
+        // Configurazione gestione eccezioni, adatta la gestione eccezioni al Servlet (carica prima degli altri componenti)
+        http.addFilterBefore(exceptionFilter(), UsernamePasswordAuthenticationFilter.class);
+
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -60,10 +61,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public DaoAuthenticationProvider authProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
+    public ExceptionFilter exceptionFilter() {
+        return new ExceptionFilter();
     }
 }

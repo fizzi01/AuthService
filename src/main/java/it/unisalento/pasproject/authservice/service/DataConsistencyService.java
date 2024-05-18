@@ -1,6 +1,6 @@
 package it.unisalento.pasproject.authservice.service;
 
-import it.unisalento.pasproject.authservice.business.io.producer.MessageProducer;
+import it.unisalento.pasproject.authservice.business.producer.MessageProducer;
 import it.unisalento.pasproject.authservice.domain.User;
 import it.unisalento.pasproject.authservice.dto.RegistrationDTO;
 import it.unisalento.pasproject.authservice.dto.UpdatedProfileMessageDTO;
