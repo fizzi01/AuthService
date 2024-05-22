@@ -32,14 +32,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String username = null;
         String jwt = null;
+        String role = null;
 
         try {
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 jwt = authorizationHeader.substring(7);
                 username = jwtUtilities.extractUsername(jwt);
+                role = jwtUtilities.extractRole(jwt);
+            }else {
+                throw new AccessDeniedException("Missing token");
             }
         } catch (Exception e) {
-            throw new AccessDeniedException("Invalid token");
+            throw new AccessDeniedException("Invalid token: " + e.getMessage());
         }
 
 

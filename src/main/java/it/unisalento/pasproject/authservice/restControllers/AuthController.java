@@ -46,7 +46,7 @@ public class AuthController {
             throw new UsernameNotFoundException("Not found user with email: " + loginDTO.getEmail() + ".");
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        final String jwt = jwtUtilities.generateToken(user.getEmail());
+        final String jwt = jwtUtilities.generateToken(user.getEmail(), user.getRole());
         return ResponseEntity.ok(new AuthenticationResponseDTO(jwt));
     }
 
