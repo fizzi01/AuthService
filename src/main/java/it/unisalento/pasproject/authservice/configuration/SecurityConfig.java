@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
@@ -43,7 +44,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable); // Disabilita CSRF
 
         // Configurazione gestione eccezioni, adatta la gestione eccezioni al Servlet (carica prima degli altri componenti)
-        http.addFilterBefore(exceptionFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(exceptionFilter(), LogoutFilter.class);
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
