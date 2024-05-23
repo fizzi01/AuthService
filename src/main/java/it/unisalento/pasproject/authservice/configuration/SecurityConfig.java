@@ -19,9 +19,13 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 
+import java.util.List;
+
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig {
+
+    private final List<String> ignoredUrls = List.of("/api/authenticate", "/api/registration");
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
@@ -31,11 +35,11 @@ public class SecurityConfig {
     //Filtri della chiamata
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/api/authenticate","/api/registration").permitAll()
-                        .anyRequest().authenticated())
-                .sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+//        http.authorizeHttpRequests((auth) -> auth
+//                        .requestMatchers("/api/authenticate","/api/registration").permitAll()
+//                        .anyRequest().authenticated())
+//                .sessionManagement((session) -> session
+//                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         // Configurazione CORS
         http.cors(AbstractHttpConfigurer::disable); // Disabilita CORS, se necessario
@@ -58,7 +62,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter();
+        return new JwtAuthenticationFilter(ignoredUrls);
     }
 
     @Bean

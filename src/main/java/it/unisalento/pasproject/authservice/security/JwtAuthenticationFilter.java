@@ -12,9 +12,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -24,9 +27,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private CustomUserDetailsService customerUserDetailsService ;
 
+    private final List<AntPathRequestMatcher> excludedMatchers;
+
+    public JwtAuthenticationFilter(List<String> excludedMatchers) {
+        this.excludedMatchers = excludedMatchers.stream()
+                .map(AntPathRequestMatcher::new)
+                .toList();
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
+
+
 
         final String authorizationHeader = request.getHeader("Authorization");
 
@@ -63,6 +76,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         chain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        return excludedMatchers.stream()
+                .anyMatch(matcher -> matcher.matches(request));
     }
 
 }
