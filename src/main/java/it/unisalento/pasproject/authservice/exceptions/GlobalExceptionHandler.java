@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -28,6 +29,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .traceId(UUID.randomUUID().toString())
                 .timestamp(OffsetDateTime.now().toString())
                 .status(HttpStatus.UNAUTHORIZED)
+                .message(ex.getMessage())
+                .build();
+
+        return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    protected ResponseEntity<CustomErrorResponse> handleUsernameNotFoundException(UsernameNotFoundException ex) {
+        CustomErrorResponse errorResponse = CustomErrorResponse.builder()
+                .traceId(UUID.randomUUID().toString())
+                .timestamp(OffsetDateTime.now().toString())
+                .status(HttpStatus.NOT_FOUND)
                 .message(ex.getMessage())
                 .build();
 
