@@ -35,19 +35,27 @@ public class AuthController {
 
     @RequestMapping(value="/authenticate", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody LoginDTO loginDTO) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginDTO.getEmail(),
-                        loginDTO.getPassword()
-                )
-        );
-        User user = userRepository.findByEmail(loginDTO.getEmail());
-        if(user == null) {
-            throw new UsernameNotFoundException("Not found user with email: " + loginDTO.getEmail() + ".");
+        try{
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginDTO.getEmail(),
+                            loginDTO.getPassword()
+                    )
+            );
+
+            User user = userRepository.findByEmail(loginDTO.getEmail());
+            if(user == null) {
+                throw new UsernameNotFoundException("Not found user with email: " + loginDTO.getEmail() + ".");
+            }
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            final String jwt = jwtUtilities.generateToken(user.getEmail(), user.getRole());
+            return ResponseEntity.ok(new AuthenticationResponseDTO(jwt));
+
+        } catch (Exception e) {
+            throw new UsernameNotFoundException(e.getMessage());
         }
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        final String jwt = jwtUtilities.generateToken(user.getEmail(), user.getRole());
-        return ResponseEntity.ok(new AuthenticationResponseDTO(jwt));
+
     }
 
 }
