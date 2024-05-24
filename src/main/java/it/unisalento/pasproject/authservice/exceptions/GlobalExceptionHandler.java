@@ -4,6 +4,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -19,6 +20,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<CustomErrorResponse> handleTransactionNotFoundException(RuntimeException ex) {
         CustomErrorException exception = (CustomErrorException) ex;
         return ResponseEntity.status(exception.getErrorResponse().getStatus()).body(exception.getErrorResponse());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    protected ResponseEntity<CustomErrorResponse> handleBadCredentialsException(BadCredentialsException ex) {
+        CustomErrorResponse errorResponse = CustomErrorResponse.builder()
+                .traceId(UUID.randomUUID().toString())
+                .timestamp(OffsetDateTime.now().toString())
+                .status(HttpStatus.UNAUTHORIZED)
+                .message(ex.getMessage())
+                .build();
+
+        return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
     }
 
     @Override
