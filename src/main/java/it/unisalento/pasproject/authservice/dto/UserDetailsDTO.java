@@ -10,13 +10,4 @@ public class UserDetailsDTO {
     private String role;
     private Boolean enabled;
 
-    public UserDetailsDTO() {
-    }
-
-    public UserDetailsDTO(String email, String role, Boolean enable) {
-        this.email = email;
-        this.role = role;
-        this.enabled = true;
-    }
-
 }

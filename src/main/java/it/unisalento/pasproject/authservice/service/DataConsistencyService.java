@@ -17,8 +17,6 @@ public class DataConsistencyService {
     private final UserRepository userRepository;
     private final MessageProducer messageProducer;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DataConsistencyService.class);
-
     @Value("${rabbitmq.exchange.data.name}")
     private String dataExchange;
 
@@ -37,9 +35,7 @@ public class DataConsistencyService {
 
     @RabbitListener(queues = "${rabbitmq.queue.update.name}")
     public void receiveUpdateMessage(UpdatedProfileMessageDTO updatedProfileMessageDTO) {
-        LOGGER.info("Received message {}", updatedProfileMessageDTO.toString());
 
-        //TODO: Implementare logica per gestire il dto e aggiornare l'auth
         User user = userRepository.findByEmail(updatedProfileMessageDTO.getEmail());
 
         if(user != null) {

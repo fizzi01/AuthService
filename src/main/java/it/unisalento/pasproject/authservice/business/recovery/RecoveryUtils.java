@@ -5,6 +5,10 @@ import java.util.Base64;
 
 public class RecoveryUtils {
 
+    private RecoveryUtils() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static String generateSafeToken(){
         SecureRandom random = new SecureRandom();
         byte[] bytes = new byte[24];

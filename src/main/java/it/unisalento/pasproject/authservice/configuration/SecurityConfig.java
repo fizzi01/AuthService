@@ -31,11 +31,6 @@ public class SecurityConfig {
     //Filtri della chiamata
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-/*        http.authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/api/authenticate","/api/registration","/api/recover/{token}").permitAll()
-                        .anyRequest().authenticated())
-                .sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));*/
 
         // Configurazione CORS
         http.cors(AbstractHttpConfigurer::disable); // Disabilita CORS, se necessario

@@ -50,8 +50,6 @@ public class UserCheckService {
             throw new UsernameNotFoundException(email);
         }
 
-        LOGGER.info(String.format("User %s found with role: %s and enabled %s", user.getEmail(), user.getRole(), user.getEnabled()));
-
         return user;
     }
 

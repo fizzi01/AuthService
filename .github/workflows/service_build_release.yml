@@ -133,7 +133,7 @@ jobs:
 
       - name: Generate Changelog
         id: changelog
-        uses: mikepenz/release-changelog-builder-action@v2
+        uses: mikepenz/release-changelog-builder-action@v4
         with:
           commitMode: true
           configuration: .github/release-changelog-config.json
