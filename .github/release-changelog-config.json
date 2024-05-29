@@ -13,7 +13,7 @@
   "include_unlabeled": true,
   "transformers": [
     {
-      "pattern": "^(.*)$",
+      "pattern": "([\\s\\S]*)",
       "target": "$1"
     }
   ],
