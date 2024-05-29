@@ -11,7 +11,7 @@ services:
     depends_on:
       - auth-db
     networks:
-      - auth-net
+      - greenspot-net
     volumes:
       - ./build/libs/AuthService-v1.1.3.jar:/app/app.jar
     working_dir: /app
@@ -27,13 +27,10 @@ services:
       - mongo_auth_data:/data/db
       - mongo_auth_config:/data/configdb
     networks:
-      - auth-net
+      - greenspot-net
 
 networks:
-  auth-net:
-    name: auth_net
-    driver:
-      "bridge"
+  greenspot-net:
 
 volumes:
     mongo_auth:

@@ -2,17 +2,13 @@ package it.unisalento.pasproject.authservice.configuration;
 
 import it.unisalento.pasproject.authservice.security.ExceptionFilter;
 import it.unisalento.pasproject.authservice.security.JwtAuthenticationFilter;
-import it.unisalento.pasproject.authservice.service.CustomUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -25,7 +21,7 @@ import java.util.List;
 @EnableMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig {
 
-    private final List<String> ignoredUrls = List.of("/api/authenticate", "/api/registration");
+    private final List<String> ignoredUrls = List.of("/api/authenticate", "/api/registration", "/api/recover/**");
 
     @Bean
     public static PasswordEncoder passwordEncoder() {
@@ -35,11 +31,11 @@ public class SecurityConfig {
     //Filtri della chiamata
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http.authorizeHttpRequests((auth) -> auth
-//                        .requestMatchers("/api/authenticate","/api/registration").permitAll()
-//                        .anyRequest().authenticated())
-//                .sessionManagement((session) -> session
-//                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+/*        http.authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/api/authenticate","/api/registration","/api/recover/{token}").permitAll()
+                        .anyRequest().authenticated())
+                .sessionManagement((session) -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));*/
 
         // Configurazione CORS
         http.cors(AbstractHttpConfigurer::disable); // Disabilita CORS, se necessario
