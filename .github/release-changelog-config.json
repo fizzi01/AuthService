@@ -1,5 +1,5 @@
 {
-  "template": "# Changelog\n${{CHANGELOG}}\n\n${{RELEASE_DIFF}}\n",
+  "template": "# Changelog\n\n${{CHANGELOG}}\n\n${{RELEASE_DIFF}}\n",
   "categories": [
     { "title": "## 🎉 Enhancements", "labels": ["enhancement"] },
     { "title": "## ⚒️ Bug Fixes", "labels": ["bug","fixes","fix","fixed"] },
@@ -12,13 +12,13 @@
   "include_unlabeled": true,
   "label_extractor": [
     {
-      "pattern": "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test){1}(\\([\\w\\-\\.]+\\))?(!)?: ([\\w ])+([\\s\\S]*)",
+      "pattern": "^(build|update|chore|ci|docs|feat|fix|perf|refactor|revert|style|test){1}(\\([\\w\\-\\.]+\\))?(!)?: ([\\w ])+([\\s\\S]*)",
       "target": "$1"
     }
   ],
   "transformers": [
     {
-      "pattern": "([\\w ])+([\\s\\S]*)",
+      "pattern": "([\\w ][\\s\\S]*)",
       "target": "$1"
     }
   ],
