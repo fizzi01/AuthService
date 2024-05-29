@@ -10,11 +10,16 @@
   "max_pull_requests": 50,
   "max_issues": 50,
   "include_unlabeled": true,
-  "transformers": [
+  "label_extractor": [
     {
-      "pattern": "([\\w ][\\s\\S]*)",
+      "pattern": "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test){1}(.*)",
       "target": "$1"
     }
   ],
-  "commit_template": "- ${{MESSAGE}}\n"
+  "transformers": [
+    {
+      "pattern": "([\\w ][\\s\\S]*)$",
+      "target": "$1"
+    }
+  ]
 }
