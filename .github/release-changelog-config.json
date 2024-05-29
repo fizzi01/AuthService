@@ -1,10 +1,10 @@
 {
-  "template": "${{CHANGELOG}}\n\n${{RELEASE_DIFF}}\n",
+  "template": "# Changelog\n${{CHANGELOG}}\n\n${{RELEASE_DIFF}}\n",
   "categories": [
-    { "title": "� Enhancements", "labels": ["enhancement"] },
-    { "title": "� Bug Fixes", "labels": ["bug"] },
-    { "title": "� Maintenance", "labels": ["chore"] },
-    { "title": "# Changes", "labels": [] }
+    { "title": "## � Enhancements", "labels": ["enhancement"] },
+    { "title": "## � Bug Fixes", "labels": ["bug","fixes","fix","fixed"] },
+    { "title": "## � Maintenance", "labels": ["chore"] },
+    { "title": "## Changes", "labels": [] }
   ],
   "sort": "ASC",
   "max_tags_to_fetch": 10,
@@ -17,5 +17,5 @@
       "target": "$1"
     }
   ],
-  "pr_template": ""
+  "commit_template": "- ${{MESSAGE}}\n"
 }
