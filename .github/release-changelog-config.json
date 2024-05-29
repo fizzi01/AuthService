@@ -1,10 +1,10 @@
 {
   "template": "# Changelog\n${{CHANGELOG}}\n\n${{RELEASE_DIFF}}\n",
   "categories": [
-    { "title": "## � Enhancements", "labels": ["enhancement"] },
-    { "title": "## � Bug Fixes", "labels": ["bug","fixes","fix","fixed"] },
-    { "title": "## � Maintenance", "labels": ["chore"] },
-    { "title": "## Changes", "labels": [] }
+    { "title": "## 🎉 Enhancements", "labels": ["enhancement"] },
+    { "title": "## ⚒️ Bug Fixes", "labels": ["bug","fixes","fix","fixed"] },
+    { "title": "## Maintenance", "labels": ["chore"] },
+    { "title": "## 🆕 Changes", "labels": [] }
   ],
   "max_tags_to_fetch": 10,
   "max_pull_requests": 50,
@@ -18,7 +18,7 @@
   ],
   "transformers": [
     {
-      "pattern": "^(.*)$",
+      "pattern": "([\\w ])+([\\s\\S]*)",
       "target": "$1"
     }
   ],
