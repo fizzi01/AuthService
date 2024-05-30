@@ -7,6 +7,8 @@ import it.unisalento.pasproject.authservice.exceptions.TokenException;
 import it.unisalento.pasproject.authservice.exceptions.UserNotFoundException;
 import it.unisalento.pasproject.authservice.repositories.CredentialsRestoreRepository;
 import it.unisalento.pasproject.authservice.repositories.UserRepository;
+import it.unisalento.pasproject.authservice.service.NotificationConstants;
+import it.unisalento.pasproject.authservice.service.NotificationMessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,11 +24,13 @@ public class UserCredentialsRecoveryService {
 
     private final UserRepository userRepository;
     private final CredentialsRestoreRepository credentialsRestoreRepository;
-    private static final Logger LOGGER = Logger.getLogger(UserCredentialsRecoveryService.class.getName());
+    private final NotificationMessageHandler notificationMessageHandler;
+
     @Autowired
-    public UserCredentialsRecoveryService(UserRepository userRepository, CredentialsRestoreRepository credentialsRestoreRepository) {
+    public UserCredentialsRecoveryService(UserRepository userRepository, CredentialsRestoreRepository credentialsRestoreRepository, NotificationMessageHandler notificationMessageHandler) {
         this.userRepository = userRepository;
         this.credentialsRestoreRepository = credentialsRestoreRepository;
+        this.notificationMessageHandler = notificationMessageHandler;
     }
 
     public CredentialsRestore recoverCredentials(String email) {
@@ -43,6 +47,19 @@ public class UserCredentialsRecoveryService {
         credentialsRestoreRepository.save(credentialsRestore);
 
         //Notification service to send email
+        try{
+            notificationMessageHandler.sendNotificationMessage(NotificationMessageHandler
+                .buildNotificationMessage(
+                        email,
+                        credentialsRestore.getToken(), //Mando solo il token perchè voglio che venga buildato un link
+                        "Password recovery",
+                        NotificationConstants.AUTH_NOTIFICATION_TYPE,
+                        true, false));
+        } catch (Exception e) {
+            //Silenzio le eccezioni, non è un passagio necessario, se fallisce amen si esegue un altro recovery
+            return credentialsRestore;
+        }
+
         return credentialsRestore;
     }
 
@@ -62,9 +79,7 @@ public class UserCredentialsRecoveryService {
         User user = userRepository.findByEmail(credentialsRestore.getEmail());
 
         user.setPassword(passwordEncoder().encode(newPassword));
-        LOGGER.info("Password reset for user: " + user.getEmail());
         userRepository.save(user);
-        LOGGER.info("Saved into DB");
         credentialsRestore.setUsed(true);
         credentialsRestoreRepository.save(credentialsRestore);
     }

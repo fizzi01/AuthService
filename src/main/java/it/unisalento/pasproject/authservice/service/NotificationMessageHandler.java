@@ -21,7 +21,17 @@ public class NotificationMessageHandler {
         this.messageProducer = messageProducer;
     }
 
-    //TODO: Creare il dto apposito per inviare un NotificationDTO
+    public static NotificationMessageDTO buildNotificationMessage(String receiver, String message, String subject, String type, boolean email, boolean notification) {
+        NotificationMessageDTO notificationMessage = new NotificationMessageDTO();
+        notificationMessage.setReceiver(receiver);
+        notificationMessage.setMessage(message);
+        notificationMessage.setSubject(subject);
+        notificationMessage.setType(type);
+        notificationMessage.setEmail(email);
+        notificationMessage.setNotification(notification);
+        return notificationMessage;
+    }
+
     public void sendNotificationMessage(NotificationMessageDTO message) {
         messageProducer.sendMessage(message, notificationRoutingKey, notificationExchange);
     }
