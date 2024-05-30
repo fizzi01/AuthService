@@ -22,14 +22,14 @@ public class NotificationMessageHandler {
     }
 
     public static NotificationMessageDTO buildNotificationMessage(String receiver, String message, String subject, String type, boolean email, boolean notification) {
-        NotificationMessageDTO notificationMessage = new NotificationMessageDTO();
-        notificationMessage.setReceiver(receiver);
-        notificationMessage.setMessage(message);
-        notificationMessage.setSubject(subject);
-        notificationMessage.setType(type);
-        notificationMessage.setEmail(email);
-        notificationMessage.setNotification(notification);
-        return notificationMessage;
+        return NotificationMessageDTO.builder()
+                .message(message)
+                .receiver(receiver)
+                .subject(subject)
+                .type(type)
+                .email(email)
+                .notification(notification)
+                .build();
     }
 
     public void sendNotificationMessage(NotificationMessageDTO message) {

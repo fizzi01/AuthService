@@ -1,10 +1,12 @@
 package it.unisalento.pasproject.authservice.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 public class NotificationMessageDTO{
 
     private String receiver;
