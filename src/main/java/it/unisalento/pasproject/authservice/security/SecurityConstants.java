@@ -2,9 +2,7 @@ package it.unisalento.pasproject.authservice.security;
 
 public class SecurityConstants {
 
-    private SecurityConstants() {
-        throw new IllegalStateException("Utility class");
-    }
+    private SecurityConstants() {}
 
     public static final String JWT_SECRET = "QGgjfe56Lenuir3nsLnuSa8X9WazGRmh" +
             "dQ28u7l5FwKieig8mUG4AkpAetrYrjzB" +
