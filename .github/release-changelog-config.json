@@ -19,7 +19,7 @@
   "transformers": [
   {
     "pattern": "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test){1}?: ([\\w ][\\s\\S]*)",
-    "target": "$2"
+    "target": "- $2"
   }
 ],
   "commit_template": "- ${{MESSAGE}}\n  ${{BODY}}\n"
