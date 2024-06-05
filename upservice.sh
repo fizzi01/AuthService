@@ -4,7 +4,7 @@
 # Ferma il container Docker
 docker compose stop
 
-running_containers=$(docker-compose ps -q)
+running_containers=$(docker compose ps -q)
 
 # Controlla se il container Docker si è fermato correttamente
 if [ "$running_containers" ]; then
