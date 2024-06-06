@@ -1,4 +1,4 @@
-name: Build and Release Service
+name: Build and Release Service - Minimal
 
 on:
   workflow_dispatch:
