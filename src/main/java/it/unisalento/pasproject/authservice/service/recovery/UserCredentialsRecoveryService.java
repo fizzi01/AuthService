@@ -9,6 +9,7 @@ import it.unisalento.pasproject.authservice.repositories.CredentialsRestoreRepos
 import it.unisalento.pasproject.authservice.repositories.UserRepository;
 import it.unisalento.pasproject.authservice.service.NotificationConstants;
 import it.unisalento.pasproject.authservice.service.NotificationMessageHandler;
+import it.unisalento.pasproject.authservice.service.UserCheckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,14 +24,16 @@ import static it.unisalento.pasproject.authservice.configuration.SecurityConfig.
 public class UserCredentialsRecoveryService {
 
     private final UserRepository userRepository;
+    private final UserCheckService userCheckService;
     private final CredentialsRestoreRepository credentialsRestoreRepository;
     private final NotificationMessageHandler notificationMessageHandler;
 
     @Autowired
-    public UserCredentialsRecoveryService(UserRepository userRepository, CredentialsRestoreRepository credentialsRestoreRepository, NotificationMessageHandler notificationMessageHandler) {
+    public UserCredentialsRecoveryService(UserRepository userRepository, CredentialsRestoreRepository credentialsRestoreRepository, NotificationMessageHandler notificationMessageHandler, UserCheckService userCheckService) {
         this.userRepository = userRepository;
         this.credentialsRestoreRepository = credentialsRestoreRepository;
         this.notificationMessageHandler = notificationMessageHandler;
+        this.userCheckService = userCheckService;
     }
 
     public CredentialsRestore recoverCredentials(String email) {
@@ -86,5 +89,19 @@ public class UserCredentialsRecoveryService {
 
     public List<CredentialsRestore> getAllCredentialsRestore() {
         return credentialsRestoreRepository.findAll();
+    }
+
+    public void changePassword(String oldPassword, String newPassword) {
+        User user = userRepository.findByEmail(userCheckService.getCurrentUserEmail());
+
+        if (user == null) {
+            throw new UserNotFoundException("User not found");
+        }
+
+        if (!passwordEncoder().matches(oldPassword, user.getPassword())) {
+            throw new TokenException("Old password is not correct");
+        }
+        user.setPassword(passwordEncoder().encode(newPassword));
+        userRepository.save(user);
     }
 }

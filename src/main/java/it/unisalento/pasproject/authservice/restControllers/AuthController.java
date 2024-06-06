@@ -68,6 +68,14 @@ public class AuthController {
         return response;
     }
 
+    @PostMapping(value="/change/password")
+    public RecoveryResponseDTO resetPassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
+        userCredentialsRecoveryService.changePassword(changePasswordDTO.getOldPassword(), changePasswordDTO.getNewPassword());
+        RecoveryResponseDTO response = new RecoveryResponseDTO();
+        response.setMsg("Password changed");
+        return response;
+    }
+
     @GetMapping(value="/find/recover/requests")
     @Secured({ROLE_ADMIN})
     public ListCredentialsRestoreDTO getRequests() {
