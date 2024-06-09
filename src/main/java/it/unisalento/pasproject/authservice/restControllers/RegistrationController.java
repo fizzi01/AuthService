@@ -8,14 +8,12 @@ import it.unisalento.pasproject.authservice.repositories.UserRepository;
 import it.unisalento.pasproject.authservice.service.DataConsistencyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
 import static it.unisalento.pasproject.authservice.configuration.SecurityConfig.passwordEncoder;
+import static it.unisalento.pasproject.authservice.security.SecurityConstants.*;
 
 @RestController
 @RequestMapping("/api/registration")
@@ -30,7 +28,7 @@ public class RegistrationController {
         this.dataConsistencyService = dataConsistencyService;
     }
 
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO post(@RequestBody RegistrationDTO registrationDTO) {
         User existingUser = userRepository.findByEmail(registrationDTO.getEmail());
         if (existingUser != null) {
@@ -42,8 +40,18 @@ public class RegistrationController {
         user.setSurname(registrationDTO.getSurname());
         user.setEmail(registrationDTO.getEmail());
         user.setPassword(passwordEncoder().encode(registrationDTO.getPassword()));
-        user.setRole(registrationDTO.getRole());
-        user.setRegistrationDate(LocalDateTime.now());
+
+        switch (registrationDTO.getRole().toUpperCase()) {
+            case ROLE_MEMBRO -> {
+                user.setRole(ROLE_MEMBRO);
+            }
+            case ROLE_UTENTE -> {
+                user.setRole(ROLE_UTENTE);
+            }
+            default -> {
+                throw new IllegalArgumentException("Invalid role: " + registrationDTO.getRole());
+            }
+        }
 
         //Così restituisce l'id assegnato da MongoDB
         user = userRepository.save(user);
