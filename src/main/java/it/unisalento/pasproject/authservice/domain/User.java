@@ -1,9 +1,5 @@
 package it.unisalento.pasproject.authservice.domain;
 
-// Classe di Model vera e propria a differenza del DTO che serve solo per trasferire dati
-// Oggetto che puo usare MongoDB per serializzarlo. Dobbiamo quindi dire quale è l'id in modo che MongoDB applichi le proprietà giuste
-
-
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;

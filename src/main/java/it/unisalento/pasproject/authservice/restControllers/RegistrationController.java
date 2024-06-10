@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 import static it.unisalento.pasproject.authservice.configuration.SecurityConfig.passwordEncoder;
 import static it.unisalento.pasproject.authservice.security.SecurityConstants.*;
 
@@ -42,6 +44,7 @@ public class RegistrationController {
         user.setName(registrationDTO.getName());
         user.setSurname(registrationDTO.getSurname());
         user.setEmail(registrationDTO.getEmail());
+        user.setRegistrationDate(LocalDateTime.now());
         user.setPassword(passwordEncoder().encode(registrationDTO.getPassword()));
 
 
