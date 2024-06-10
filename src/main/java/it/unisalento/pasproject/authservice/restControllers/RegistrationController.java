@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-
 import static it.unisalento.pasproject.authservice.configuration.SecurityConfig.passwordEncoder;
 import static it.unisalento.pasproject.authservice.security.SecurityConstants.*;
 
@@ -35,22 +33,22 @@ public class RegistrationController {
             throw new UserAlreadyExist("User already exists: " + registrationDTO.getEmail());
         }
 
+        //TODO: Defaulting role to MEMBRO, Only admin can set the role to greater than MEMBRO
+        if (registrationDTO.getRole() == null) {
+            registrationDTO.setRole(ROLE_MEMBRO);
+        }
+
         User user = new User();
         user.setName(registrationDTO.getName());
         user.setSurname(registrationDTO.getSurname());
         user.setEmail(registrationDTO.getEmail());
         user.setPassword(passwordEncoder().encode(registrationDTO.getPassword()));
 
+
         switch (registrationDTO.getRole().toUpperCase()) {
-            case ROLE_MEMBRO -> {
-                user.setRole(ROLE_MEMBRO);
-            }
-            case ROLE_UTENTE -> {
-                user.setRole(ROLE_UTENTE);
-            }
-            default -> {
-                throw new IllegalArgumentException("Invalid role: " + registrationDTO.getRole());
-            }
+            case ROLE_MEMBRO -> user.setRole(ROLE_MEMBRO);
+            case ROLE_UTENTE -> user.setRole(ROLE_UTENTE);
+            default -> throw new IllegalArgumentException("Invalid role: " + registrationDTO.getRole());
         }
 
         //Così restituisce l'id assegnato da MongoDB
