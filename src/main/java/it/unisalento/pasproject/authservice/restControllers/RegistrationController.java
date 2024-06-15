@@ -3,8 +3,10 @@ package it.unisalento.pasproject.authservice.restControllers;
 import it.unisalento.pasproject.authservice.domain.User;
 import it.unisalento.pasproject.authservice.dto.RegistrationDTO;
 import it.unisalento.pasproject.authservice.dto.UserDTO;
+import it.unisalento.pasproject.authservice.exceptions.IllegalRequestException;
 import it.unisalento.pasproject.authservice.exceptions.UserAlreadyExist;
 import it.unisalento.pasproject.authservice.repositories.UserRepository;
+import it.unisalento.pasproject.authservice.security.JwtUtilities;
 import it.unisalento.pasproject.authservice.service.DataConsistencyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -22,10 +24,13 @@ public class RegistrationController {
 
     private final DataConsistencyService dataConsistencyService;
 
+    private final JwtUtilities jwtUtilities;
+
     @Autowired
-    public RegistrationController(UserRepository userRepository, DataConsistencyService dataConsistencyService) {
+    public RegistrationController(UserRepository userRepository, DataConsistencyService dataConsistencyService, JwtUtilities jwtUtilities) {
         this.userRepository = userRepository;
         this.dataConsistencyService = dataConsistencyService;
+        this.jwtUtilities = jwtUtilities;
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -35,10 +40,13 @@ public class RegistrationController {
             throw new UserAlreadyExist("User already exists: " + registrationDTO.getEmail());
         }
 
-        //TODO: Defaulting role to MEMBRO, Only admin can set the role to greater than MEMBRO
         if (registrationDTO.getRole() == null) {
             registrationDTO.setRole(ROLE_MEMBRO);
+        }else if(jwtUtilities.extractRole(registrationDTO.getRole()).equals(ROLE_ADMIN)){
+            registrationDTO.setRole(ROLE_ADMIN);
         }
+
+
 
         User user = new User();
         user.setName(registrationDTO.getName());
@@ -51,7 +59,8 @@ public class RegistrationController {
         switch (registrationDTO.getRole().toUpperCase()) {
             case ROLE_MEMBRO -> user.setRole(ROLE_MEMBRO);
             case ROLE_UTENTE -> user.setRole(ROLE_UTENTE);
-            default -> throw new IllegalArgumentException("Invalid role: " + registrationDTO.getRole());
+            case ROLE_ADMIN -> user.setRole(ROLE_ADMIN);
+            default -> throw new IllegalRequestException("Invalid role: " + registrationDTO.getRole());
         }
 
         //Così restituisce l'id assegnato da MongoDB
