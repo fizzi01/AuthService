@@ -40,11 +40,17 @@ public class RegistrationController {
             throw new UserAlreadyExist("User already exists: " + registrationDTO.getEmail());
         }
 
-        if (registrationDTO.getRole() == null) {
-            registrationDTO.setRole(ROLE_MEMBRO);
-        }else if(jwtUtilities.extractRole(registrationDTO.getRole()).equals(ROLE_ADMIN)){
-            registrationDTO.setRole(ROLE_ADMIN);
+        try{
+            if (registrationDTO.getRole() == null) {
+                registrationDTO.setRole(ROLE_MEMBRO);
+            }else if( registrationDTO.getRole().length() > 10
+                    && jwtUtilities.extractRole(registrationDTO.getRole()).equals(ROLE_ADMIN)){
+                registrationDTO.setRole(ROLE_ADMIN);
+            }
+        } catch (Exception e){
+            throw new IllegalRequestException("Invalid role: " + registrationDTO.getRole());
         }
+
 
 
 
