@@ -4,6 +4,7 @@ package it.unisalento.pasproject.authservice.restControllers;
 import it.unisalento.pasproject.authservice.domain.CredentialsRestore;
 import it.unisalento.pasproject.authservice.domain.User;
 import it.unisalento.pasproject.authservice.dto.*;
+import it.unisalento.pasproject.authservice.exceptions.UserNotFoundException;
 import it.unisalento.pasproject.authservice.repositories.UserRepository;
 import it.unisalento.pasproject.authservice.security.JwtUtilities;
 import it.unisalento.pasproject.authservice.service.recovery.UserCredentialsRecoveryService;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static it.unisalento.pasproject.authservice.security.SecurityConstants.*;
 
@@ -33,6 +35,8 @@ public class AuthController {
     private final JwtUtilities jwtUtilities;
 
     private final UserCredentialsRecoveryService userCredentialsRecoveryService;
+
+    private final Logger logger = Logger.getLogger(AuthController.class.getName());
 
     @Autowired
     public AuthController(UserRepository userRepository, AuthenticationManager authenticationManager, JwtUtilities jwtUtilities, UserCredentialsRecoveryService userCredentialsRecoveryService) {
@@ -107,7 +111,7 @@ public class AuthController {
 
             User user = userRepository.findByEmail(loginDTO.getEmail());
             if(user == null) {
-                throw new UsernameNotFoundException("Not found user with email: " + loginDTO.getEmail() + ".");
+                throw new UserNotFoundException("Not found user with email: " + loginDTO.getEmail() + ".");
             }
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -115,7 +119,7 @@ public class AuthController {
             return ResponseEntity.ok(new AuthenticationResponseDTO(jwt));
 
         } catch (Exception e) {
-            throw new UsernameNotFoundException(e.getMessage());
+            throw new UserNotFoundException(e.getMessage());
         }
 
     }
