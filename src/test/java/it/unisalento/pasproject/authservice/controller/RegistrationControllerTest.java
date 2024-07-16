@@ -133,6 +133,8 @@ class RegistrationControllerTest {
         registrationDTO.setPassword("password");
         registrationDTO.setRole(INVALID_ROLE);
 
+        given(jwtUtilities.extractRole(INVALID_ROLE)).willThrow(new IllegalRequestException("Invalid role: " + INVALID_ROLE));
+
         mockMvc.perform(post("/api/registration")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(registrationDTO)))
